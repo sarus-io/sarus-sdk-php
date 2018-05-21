@@ -9,10 +9,6 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
-    <php>
-        <env name="SARUS_URI" value="" />
-        <env name="SARUS_SECRET" value="" />
-    </php>
     <testsuites>
         <testsuite name="SARUS SDK Test Suite">
             <directory>./tests/</directory>

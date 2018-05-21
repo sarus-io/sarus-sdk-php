@@ -43,12 +43,16 @@ class JsonGuzzleClient implements Client
 
         $body = $response->getBody()->getContents();
 
-        return $this->decodeJson($body);
+        if ($body) {
+            return $this->decodeJson($body);
+        }
+
+        return [];
     }
 
     /**
      * @param string $body
-     * @return \stdClass
+     * @return array
      */
     private function decodeJson($body)
     {

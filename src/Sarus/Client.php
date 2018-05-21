@@ -13,7 +13,7 @@ interface Client
      *
      * @throws HttpException
      * @throws RuntimeException
-     * @return \stdClass|array representing response body
+     * @return array representing response body
      */
     public function request($method, $uri, array $body = null);
 

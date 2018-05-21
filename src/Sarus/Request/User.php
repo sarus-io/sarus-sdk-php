@@ -1,6 +1,6 @@
 <?php
 
-namespace Sarus\Request\User;
+namespace Sarus\Request;
 
 class User
 {
@@ -26,9 +26,9 @@ class User
      */
     public function __construct($email, $firstName, $lastName, $identityProviderId)
     {
-        $this->email = (string) $email;
+        $this->email     = (string) $email;
         $this->firstName = (string) $firstName;
-        $this->lastName = (string) $lastName;
+        $this->lastName  = (string) $lastName;
         $this->identityProviderId = (int) $identityProviderId;
     }
 

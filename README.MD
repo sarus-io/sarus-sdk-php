@@ -35,18 +35,19 @@ $sdk = (new SdkFactory(
 ```php
 
 $sarusProductUuids = ['uuid1', 'uuid2'];
-$user = [
-    'email'      => 'testemal@user.com', //Required
-    'first_name' => 'Test',              //Required
-    'last_name'  => 'Testerovich',       //Required
-    'identity_provider_id' => 23,        //Required
-    'address1' => '53 Creek Lane',
-    'address2' => '',
-    'city_locality' => 'Milwaukee',
-    'state_region' => 'Wisconsin',
-    'postal_code' => '53204',
-    'country' => 'USA'
-];
+$user = new User(
+    'test@test.com',
+    'test_name',
+    'test-last_name',
+    96
+);
+$user
+    ->setCity('Milwaukee')
+    ->setCountry('USA')
+    ->setRegion('Wisconsin')
+    ->setAddress1('53 Creek Lane')
+    ->setPostalCode('53204')
+;
 try {
 
     $sdk->purchaseProduct($sarusProductUuids, $user)
@@ -115,3 +116,11 @@ try {
     $e->getRequest();           // returns  \Psr\Http\Message\RequestInterface
 }
 ```
+
+#### Run tests
+
+Note: these tests are functional tests, so they make real requests to API host
+
+1. Create .env file by copy .env.example in tests/config directory
+2. Specify values described in .env file
+3. Run tests

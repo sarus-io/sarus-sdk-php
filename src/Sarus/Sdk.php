@@ -4,7 +4,7 @@ namespace Sarus;
 
 use Sarus\Client\Exception\HttpException;
 use Sarus\Client\Exception\RuntimeException;
-use Sarus\Request\User\User;
+use Sarus\Request\User;
 
 class Sdk
 {
@@ -29,7 +29,7 @@ class Sdk
      * @throws HttpException
      * @throws RuntimeException
      *
-     * @return void
+     * @return bool
      */
     public function purchaseProduct(array $uuids, User $user, array $extraData = [])
     {
