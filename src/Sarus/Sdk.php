@@ -4,6 +4,7 @@ namespace Sarus;
 
 use Sarus\Client\Exception\HttpException;
 use Sarus\Client\Exception\RuntimeException;
+use Sarus\Request\User\User;
 
 class Sdk
 {
@@ -21,7 +22,6 @@ class Sdk
     }
 
     /**
-     * @todo define user structure
      * @param array $uuids
      * @param $user
      * @param array $extraData
@@ -31,11 +31,11 @@ class Sdk
      *
      * @return void
      */
-    public function purchaseProduct(array $uuids, $user, array $extraData = [])
+    public function purchaseProduct(array $uuids, User $user, array $extraData = [])
     {
         $body = [
             'product_uuids' => $uuids,
-            'user' => $user
+            'user' => $user->toRequestArray(),
         ] + $extraData;
 
         $this->client->request('POST', '/v1/purchase', $body);
