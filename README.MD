@@ -22,13 +22,21 @@ require 'vendor/autoload.php';
 
 ```php
 use Sarus\SdkFactory;
+use Sarus\Config;
 
-$sdk = (new SdkFactory(
-    'secret',                // Requred  - API secret for sarus    
-     'https://api.sarus.io', // Optional - base url
-     30,                     // Optional - timeout
-     true                    // Optional - ssl verify
- ))->create();
+$config = new Config(
+   'secret',                // Requred  - API secret for sarus    
+   'https://api.sarus.io', // Optional - base url
+   30,                     // Optional - timeout
+   true                    // Optional - ssl verify
+);
+$factory = new SdkFactory();
+$sdk = $factory->create($config);
+ 
+// If you want to log request and response:
+ $logger = new Logger();
+ $logLevel = LogLevel::INFO; //By default log level is info
+ $sdk = $factory->createWithLogger($config, $logger, $logLevel);
 ```
 
 ### Purchase product:

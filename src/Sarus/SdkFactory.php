@@ -1,127 +1,73 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: makedo3
- * Date: 18.05.18
- * Time: 16:44
- */
 
 namespace Sarus;
 
-
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Sarus\Client\JsonGuzzleClient;
 
 class SdkFactory
 {
-    const DEFAULT_BASE_URI = 'https://api.sarus.io';
-    const DEFAULT_TIMEOUT  = 30;
-
-    /**
-     * @var string
-     */
-    private $secret;
-    /**
-     * @var string
-     */
-    private $baseUri;
-    /**
-     * @var int
-     */
-    private $timeout;
-    /**
-     * @var bool
-     */
-    private $sslVerify;
-
-
-    /**
-     * @param $secret
-     * @param string $baseUri
-     * @param int $timeout
-     * @param bool $sslVerify
-     */
-    public function __construct(
-        $secret,
-        $baseUri = self::DEFAULT_BASE_URI,
-        $timeout = self::DEFAULT_TIMEOUT,
-        $sslVerify = true
-    ) {
-        $this->secret    = $this->filterValidateSecret($secret);
-        $this->baseUri   = $this->filterValidateBaseUri($baseUri);
-        $this->timeout   = $this->filterValidateTimeout($timeout);
-        $this->sslVerify = $this->filterValidateSslVerify($sslVerify);
-    }
-
     /**
      * @return Sdk
      */
-    public function create()
+    public function create(Config $config)
     {
-        return new Sdk(
-            new JsonGuzzleClient(
-                new \GuzzleHttp\Client([
-                    'base_uri'        => $this->baseUri,
-                    'timeout'         => $this->timeout,
-                    'verify'          => $this->sslVerify,
-                    'allow_redirects' => false,
-                    'cookies'         => false,
-                    'headers' => [
-                        'Content-Type'  => 'application/json',
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $this->secret
-                    ]
-                ])
-            )
-        );
+        return new Sdk(new JsonGuzzleClient(
+            $this->createGuzzleClient($config)
+        ));
+    }
+
+    public function createWithLogger(
+        Config $config,
+        LoggerInterface $logger,
+        $logLevel = LogLevel::INFO
+    ) {
+        $handler = HandlerStack::create();
+        $handler->push(Middleware::log($logger, new MessageFormatter(), $logLevel));
+
+        return new Sdk(new JsonGuzzleClient(
+            $this->createGuzzleClient($config, $handler)
+        ));
     }
 
     /**
-     * @param string $secret
-     * @return string
+     * @param Config $config
+     * @return \GuzzleHttp\Client
      */
-    private function filterValidateSecret($secret)
+    protected function createGuzzleClient(Config $config, HandlerStack $handler = null)
     {
-        if (!is_string($secret) || !$secret) {
-            throw new \InvalidArgumentException('Secret parameter should be a non-empty string');
+        $config = $this->createGuzzleConfig($config);
+
+        if ($handler) {
+            $config['handler'] = $handler;
         }
 
-        return $secret;
+        return new \GuzzleHttp\Client($config);
     }
 
     /**
-     * @param string $baseUri
-     * @return string
+     * @param Config $config
+     * @return array|Config
      */
-    private function filterValidateBaseUri($baseUri)
+    protected function createGuzzleConfig(Config $config)
     {
-        $baseUri = filter_var((string) $baseUri, FILTER_VALIDATE_URL);
-        if (false === $baseUri) {
-            throw new \InvalidArgumentException('Baseuri parameter should be a valid url');
-        };
+        $config =  [
+            'base_uri'        => $config->getBaseUri(),
+            'timeout'         => $config->getTimeout(),
+            'verify'          => $config->isSslVerify(),
+            'allow_redirects' => false,
+            'cookies'         => false,
+            'headers' => [
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
+                'Authorization' => 'Bearer ' . $config->getSecret()
+            ]
+        ];
 
-        return $baseUri;
-    }
-
-    /**
-     * @param $timeout
-     * @return int
-     */
-    private function filterValidateTimeout($timeout)
-    {
-        $timeout = (int) $timeout;
-        if ($timeout <= 0) {
-            throw new \InvalidArgumentException('Timeout parameter should be integer value greater than 0');
-        }
-
-        return $timeout;
-    }
-
-    /**
-     * @param $sslVerify
-     * @return bool
-     */
-    private function filterValidateSslVerify($sslVerify)
-    {
-        return (bool) $sslVerify;
+        return $config;
     }
 }
