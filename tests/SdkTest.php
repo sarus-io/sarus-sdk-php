@@ -4,7 +4,7 @@ namespace Sarus;
 
 use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
-use Sarus\Request\User;
+use Sarus\User;
 
 class SdkTest extends TestCase
 {

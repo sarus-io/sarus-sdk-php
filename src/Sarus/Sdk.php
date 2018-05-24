@@ -4,7 +4,7 @@ namespace Sarus;
 
 use Sarus\Client\Exception\HttpException;
 use Sarus\Client\Exception\RuntimeException;
-use Sarus\Request\User;
+use Sarus\User;
 
 class Sdk
 {

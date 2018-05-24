@@ -1,6 +1,6 @@
 <?php
 
-namespace Sarus\Request;
+namespace Sarus;
 
 class User
 {
