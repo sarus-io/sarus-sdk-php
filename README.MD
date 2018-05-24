@@ -25,11 +25,18 @@ use Sarus\SdkFactory;
 use Sarus\Config;
 
 $config = new Config(
-   'secret',                // Requred  - API secret for sarus    
+   'SECRET',               // Requred  - API secret for sarus    
    'https://api.sarus.io', // Optional - base url
    30,                     // Optional - timeout
    true                    // Optional - ssl verify
 );
+//OR
+$config = Config::fromArray([
+   'secret'    => 'SECRET',               // Requred  - API secret for sarus    
+   'baseUri'   => 'https://api.sarus.io', // Optional - base url
+   'timeout'   => 30,                     // Optional - timeout
+   'sslVerify' => true                    // Optional - ssl verify
+]);
 $factory = new SdkFactory();
 $sdk = $factory->create($config);
  
@@ -43,7 +50,7 @@ $sdk = $factory->create($config);
 ```php
 
 $sarusProductUuids = ['uuid1', 'uuid2'];
-$user = new User(
+$user = new \Sarus\User(
     'test@test.com',
     'test_name',
     'test-last_name',
@@ -118,7 +125,6 @@ try {
     // The exceptions is thrown if http request is not successful
 
     $e->getMessage();           // returns either grabbed message from response body or reason phrase
-    $e->getStatusCode();        // returns http status code of the response
     $e->hasResponse();          // returns bool, if exception holds response object
     $e->getResponse();          // returns \Psr\Http\Message\ResponseInterface
     $e->getRequest();           // returns  \Psr\Http\Message\RequestInterface

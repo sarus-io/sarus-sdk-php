@@ -4,17 +4,54 @@ namespace Sarus;
 
 class User
 {
+    /**
+     * @var string
+     */
     private $email;
+
+    /**
+     * @var string
+     */
     private $firstName;
+
+    /**
+     * @var string
+     */
     private $lastName;
+
+    /**
+     * @var int
+     */
     private $identityProviderId;
 
+    /**
+     * @var string|null
+     */
     private $address1;
+
+    /**
+     * @var string|null
+     */
     private $address2;
+
+    /**
+     * @var string|null
+     */
     private $city;
+
+    /**
+     * @var string|null
+     */
     private $region;
 
+    /**
+     * @var string|null
+     */
     private $country;
+
+    /**
+     * @var string|null
+     */
     private $postalCode;
 
     /**

@@ -12,15 +12,21 @@ use Sarus\Client\JsonGuzzleClient;
 class SdkFactory
 {
     /**
+     * @param Config $config
      * @return Sdk
      */
     public function create(Config $config)
     {
-        return new Sdk(new JsonGuzzleClient(
-            $this->createGuzzleClient($config)
-        ));
+        $guzzleClient = $this->createGuzzleClient($config);
+        return $this->createWithGuzzleClient($guzzleClient);
     }
 
+    /**
+     * @param Config $config
+     * @param LoggerInterface $logger
+     * @param string $logLevel
+     * @return Sdk
+     */
     public function createWithLogger(
         Config $config,
         LoggerInterface $logger,
@@ -28,10 +34,9 @@ class SdkFactory
     ) {
         $handler = HandlerStack::create();
         $handler->push(Middleware::log($logger, new MessageFormatter(), $logLevel));
+        $guzzleClient = $this->createGuzzleClient($config, $handler);
 
-        return new Sdk(new JsonGuzzleClient(
-            $this->createGuzzleClient($config, $handler)
-        ));
+        return $this->createWithGuzzleClient($guzzleClient);
     }
 
     /**
@@ -69,5 +74,14 @@ class SdkFactory
         ];
 
         return $config;
+    }
+
+    /**
+     * @param \GuzzleHttp\Client $guzzleClient
+     * @return Sdk
+     */
+    private function createWithGuzzleClient(\GuzzleHttp\Client $guzzleClient)
+    {
+        return new Sdk(new JsonGuzzleClient($guzzleClient));
     }
 }

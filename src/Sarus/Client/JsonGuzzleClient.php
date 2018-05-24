@@ -1,4 +1,5 @@
 <?php
+
 namespace Sarus\Client;
 
 use GuzzleHttp\Exception\GuzzleException;
@@ -36,7 +37,7 @@ class JsonGuzzleClient implements Client
                 ['body' => $jsonBody]
             );
         } catch (RequestException $e) {
-            throw HttpException::create($e->getMessage(), $e->getRequest(), $e->getResponse());
+            throw new HttpException($e->getMessage(), $e->getRequest(), $e->getResponse());
         } catch (GuzzleException $e) {
             throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }

@@ -4,18 +4,32 @@ namespace Sarus\Client\Exception;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class HttpException extends \RuntimeException
 {
+    /**
+     * @var RequestInterface
+     */
     private $request;
+
+    /**
+     * @var ResponseInterface|null
+     */
     private $response;
 
-    public static function create($message, RequestInterface $request, ResponseInterface $response = null)
+    /**
+     * @param $message
+     * @param RequestInterface $request
+     * @param ResponseInterface|null $response
+     * @return static
+     */
+    public function __construct($message, RequestInterface $request, ResponseInterface $response = null)
     {
-        $self = new static((string) $message);
-        $self->request = $request;
-        $self->response = $response;
-        return $self;
+        $this->request = $request;
+        $this->response = $response;
+
+        parent::__construct((string) $message);
     }
 
     /**

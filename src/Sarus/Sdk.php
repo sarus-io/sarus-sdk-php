@@ -13,9 +13,6 @@ class Sdk
      */
     private $client;
 
-    /**
-     * SDK constructor.
-     */
     public function __construct(Client $client)
     {
         $this->client = $client;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sarus;
 
 use Sarus\Client\Exception\HttpException;

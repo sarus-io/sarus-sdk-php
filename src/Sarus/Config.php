@@ -2,25 +2,27 @@
 
 namespace Sarus;
 
-use Psr\Log\LoggerInterface;
-
 class Config
 {
     const DEFAULT_BASE_URI = 'https://api.sarus.io';
     const DEFAULT_TIMEOUT  = 30;
+    const DEFAULT_SSL_VERIFY = true;
 
     /**
      * @var string
      */
     private $secret;
+
     /**
      * @var string
      */
     private $baseUri;
+
     /**
      * @var int
      */
     private $timeout;
+
     /**
      * @var bool
      */
@@ -36,12 +38,30 @@ class Config
         $secret,
         $baseUri = self::DEFAULT_BASE_URI,
         $timeout = self::DEFAULT_TIMEOUT,
-        $sslVerify = true
+        $sslVerify = self::DEFAULT_SSL_VERIFY
     ) {
         $this->secret    = $this->filterValidateSecret($secret);
         $this->baseUri   = $this->filterValidateBaseUri($baseUri);
         $this->timeout   = $this->filterValidateTimeout($timeout);
         $this->sslVerify = $this->filterValidateSslVerify($sslVerify);
+    }
+
+    /**
+     * @param array $data
+     * @return static
+     */
+    public static function fromArray(array $data)
+    {
+        if (!isset($data['secret'])) {
+            throw new \InvalidArgumentException('Parameter `secret` is required parameter');
+        }
+
+        return new self(
+            $data['secret'],
+            isset($data['baseUri']) ? $data['baseUri'] : self::DEFAULT_BASE_URI,
+            isset($data['timeout']) ? $data['timeout'] : self::DEFAULT_TIMEOUT,
+            isset($data['sslVerify']) ? $data['sslVerify'] : self::DEFAULT_SSL_VERIFY
+        );
     }
 
     /**
@@ -83,7 +103,7 @@ class Config
     private function filterValidateSecret($secret)
     {
         if (!is_string($secret) || !$secret) {
-            throw new \InvalidArgumentException('Secret parameter should be a non-empty string');
+            throw new \InvalidArgumentException('Parameter `secret` should be a non-empty string');
         }
 
         return $secret;
@@ -97,7 +117,7 @@ class Config
     {
         $baseUri = filter_var((string) $baseUri, FILTER_VALIDATE_URL);
         if (false === $baseUri) {
-            throw new \InvalidArgumentException('Baseuri parameter should be a valid url');
+            throw new \InvalidArgumentException('Parameter `baseUri` should be a valid url');
         };
 
         return $baseUri;
@@ -111,7 +131,7 @@ class Config
     {
         $timeout = (int) $timeout;
         if ($timeout <= 0) {
-            throw new \InvalidArgumentException('Timeout parameter should be integer value greater than 0');
+            throw new \InvalidArgumentException('Parameter `timeout` should be integer value greater than 0');
         }
 
         return $timeout;
@@ -124,13 +144,5 @@ class Config
     private function filterValidateSslVerify($sslVerify)
     {
         return (bool) $sslVerify;
-    }
-
-    /**
-     * @return null|LoggerInterface
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 }
