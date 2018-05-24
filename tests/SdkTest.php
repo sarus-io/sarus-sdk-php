@@ -23,12 +23,12 @@ class SdkTest extends TestCase
 
         $this->productUuid = getenv('SARUS_PRODUCT_UUID');
 
-        $this->sdk = (new SdkFactory(
+        $this->sdk = (new SdkFactory())->create(new Config(
             getenv('SARUS_SECRET'),
             getenv('SARUS_URI'),
             10,
             false
-        ))->create();
+        ));
     }
 
     /**
