@@ -89,9 +89,9 @@ try {
 $email = 'testemal@user.com';
 try {
 
-    $enrollments = $sdk->listEnrollments($email);
+    $response = $sdk->listEnrollments($email);
     
-    foreach($enrollments as $enrollment) {
+    foreach($response->get('data') as $enrollment) {
         $enrollment['course_uuid'];
         $enrollment['title'];
         $enrollment['description'];
@@ -132,9 +132,10 @@ try {
 ```
 
 #### Run tests
+- Functional
+    1. Create .env file by copy .env.example in tests/config directory
+    2. Specify values described in .env file
+    3. Run tests `bin/phpunit --testsuite=functional`
+- Unit
+    1.  Run tests `bin/phpunit --testsuite=unit`
 
-Note: these tests are functional tests, so they make real requests to API host
-
-1. Create .env file by copy .env.example in tests/config directory
-2. Specify values described in .env file
-3. Run tests
