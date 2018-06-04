@@ -4,7 +4,11 @@ namespace Sarus;
 
 use Sarus\Client\Exception\HttpException;
 use Sarus\Client\Exception\RuntimeException;
-use Sarus\User;
+use Sarus\Request\Enrollment\Deactivate;
+use Sarus\Request\Enrollment\GetList;
+use Sarus\Request\Product\Purchase;
+use Sarus\Request\Product\Unlink;
+use Sarus\Request\User;
 
 class Sdk
 {
@@ -23,64 +27,66 @@ class Sdk
      * @param $user
      * @param array $extraData
      *
+     * @return Response
+     *
      * @throws HttpException
      * @throws RuntimeException
-     *
-     * @return bool
      */
     public function purchaseProduct(array $uuids, User $user, array $extraData = [])
     {
-        $body = [
-            'product_uuids' => $uuids,
-            'user' => $user->toRequestArray(),
-        ] + $extraData;
-
-        $this->client->request('POST', '/v1/purchase', $body);
+        return $this->handleRequest(new Purchase($uuids, $user, $extraData));
     }
 
     /**
      * @param string $uuid
      *
+     * @return Response
+     *
      * @throws HttpException
      * @throws RuntimeException
-     *
-     * @return void
      */
     public function unlinkProduct($uuid)
     {
-        $this->client->request('POST', '/v1/products/unlink/' . $uuid);
+        return $this->handleRequest(new Unlink($uuid));
     }
 
     /**
      * @param string $email
      *
+     * @return Response
+     *
      * @throws HttpException
      * @throws RuntimeException
-     *
-     * @return array
      */
     public function listEnrollments($email)
     {
-        $body = ['email' => $email];
-        $response = $this->client->request('GET', '/v1/participations', $body);
-        return isset($response['data']) ? $response['data'] : [];
+        return $this->handleRequest(new GetList($email));
     }
 
     /**
      * @param string $email
      * @param array|string[] $productUuids
      *
+     * @return Response
+     *
      * @throws HttpException
      * @throws RuntimeException
-     *
-     * @return void
      */
     public function deactivateEnrollments($email, array $productUuids)
     {
-        $body = [
-            'email' => $email,
-            'product_ids' => $productUuids,
-        ];
-        $this->client->request('PUT', '/v1/participation/deactivate', $body);
+        return $this->handleRequest(new Deactivate($email, $productUuids));
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @throws HttpException
+     * @throws RuntimeException
+     */
+    public function handleRequest(Request $request)
+    {
+        return $this->client->request($request);
     }
 }

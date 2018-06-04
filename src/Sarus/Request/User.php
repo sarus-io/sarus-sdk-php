@@ -1,9 +1,11 @@
 <?php
 
-namespace Sarus;
+namespace Sarus\Request;
 
-class User
+class User implements \Serializable
 {
+    use SerializableTrait;
+
     /**
      * @var string
      */

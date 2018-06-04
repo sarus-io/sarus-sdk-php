@@ -1,10 +1,15 @@
 <?php
 
-namespace Sarus;
+namespace Test\Functional;
 
 use Dotenv\Dotenv;
 use PHPUnit\Framework\TestCase;
-use Sarus\User;
+use Sarus\Config;
+use Sarus\Request\Enrollment\GetList;
+use Sarus\Request\User;
+use Sarus\Response;
+use Sarus\Sdk;
+use Sarus\SdkFactory;
 
 class SdkTest extends TestCase
 {
@@ -31,9 +36,6 @@ class SdkTest extends TestCase
         ));
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
     public function test_it_purchases_product()
     {
         $user = (new User(
@@ -50,13 +52,18 @@ class SdkTest extends TestCase
         ;
 
         $products = [$this->productUuid];
-        $this->sdk->purchaseProduct($products, $user);
-
+        $response = $this->sdk->purchaseProduct($products, $user);
+        self::assertInstanceOf(Response::class, $response);
     }
 
     public function test_it_successfully_returns_enrollment_data()
     {
-        $data = $this->sdk->listEnrollments(self::USER_EMAIL);
+        $response = $this->sdk->listEnrollments(self::USER_EMAIL);
+
+        self::assertInstanceOf(Response::class, $response);
+
+        $data = $response->get('data');
+
         static::assertArrayHasKey('course_uuid', $data[0]);
         static::assertArrayHasKey('title', $data[0]);
         static::assertArrayHasKey('description', $data[0]);
@@ -64,22 +71,18 @@ class SdkTest extends TestCase
         static::assertArrayHasKey('url', $data[0]);
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
     public function test_it_deactivates_enrollment()
     {
         $products = [$this->productUuid];
-        $this->sdk->deactivateEnrollments(self::USER_EMAIL, $products);
+        $response = $this->sdk->deactivateEnrollments(self::USER_EMAIL, $products);
+        self::assertInstanceOf(Response::class, $response);
     }
 
-    /**
-     * @doesNotPerformAssertions
-     */
     public function test_it_unlinks_product()
     {
         $product = $this->productUuid;
-        $this->sdk->unlinkProduct($product);
+        $response = $this->sdk->unlinkProduct($product);
+        self::assertInstanceOf(Response::class, $response);
     }
 
     /**
@@ -87,7 +90,6 @@ class SdkTest extends TestCase
      */
     public function test_http_exception()
     {
-        $data = $this->sdk->listEnrollments('bla');
-        static::assertNotEmpty($data);
+        $this->sdk->handleRequest(new GetList('bla'));
     }
 }
