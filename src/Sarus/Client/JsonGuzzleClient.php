@@ -7,6 +7,8 @@ use GuzzleHttp\Exception\RequestException;
 use Sarus\Client;
 use Sarus\Client\Exception\HttpException;
 use Sarus\Client\Exception\RuntimeException;
+use Sarus\Request;
+use Sarus\Response;
 
 class JsonGuzzleClient implements Client
 {
@@ -23,17 +25,17 @@ class JsonGuzzleClient implements Client
     /**
      * {@inheritdoc}
      */
-    public function request($method, $uri, array $body = null)
+    public function request(Request $request)
     {
         $jsonBody = null;
-        if (null !== $body) {
-            $jsonBody = $this->encodeJson($body);
+        if (null !== $request->getBody()) {
+            $jsonBody = $this->encodeJson($request->getBody());
         }
 
         try {
-            $response = $this->guzzle->request(
-                $method,
-                $uri,
+            $httpResponse = $this->guzzle->request(
+                $request->getMethod(),
+                $request->getPath(),
                 ['body' => $jsonBody]
             );
         } catch (RequestException $e) {
@@ -42,13 +44,14 @@ class JsonGuzzleClient implements Client
             throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
-        $body = $response->getBody()->getContents();
+        $body = $httpResponse->getBody()->getContents();
+        $parsedBody = [];
 
         if ($body) {
-            return $this->decodeJson($body);
+            $parsedBody = $this->decodeJson($body);
         }
 
-        return [];
+        return new Response($parsedBody);
     }
 
     /**

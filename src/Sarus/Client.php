@@ -8,14 +8,12 @@ use Sarus\Client\Exception\RuntimeException;
 interface Client
 {
     /**
-     * @param string $method
-     * @param string $uri
-     * @param array|null $body
+     * @param Request $request
+     * @return Response
      *
      * @throws HttpException
      * @throws RuntimeException
-     * @return array representing response body
      */
-    public function request($method, $uri, array $body = null);
+    public function request(Request $request);
 
 }
