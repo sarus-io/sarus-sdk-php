@@ -42,7 +42,7 @@ $sdk = $factory->create($config);
  
 // If you want to log request and response:
  $logger = new Logger();
- $logLevel = LogLevel::INFO; //By default log level is info
+ $logLevel = \Psr\Log\LogLevel::INFO; //By default log level is info
  $sdk = $factory->createWithLogger($config, $logger, $logLevel);
 ```
 
@@ -65,7 +65,7 @@ $user
 ;
 try {
 
-    $sdk->purchaseProduct($sarusProductUuids, $user)
+    $sdk->purchaseProduct($sarusProductUuids, $user);
 
 } catch (\Sarus\Client\Exception\HttpException $e) {
 }
@@ -78,7 +78,7 @@ try {
 $sarusPoductUuid = 'uuid1';
 try {
 
-    $sdk->unlinkProduct($sarusPoductUuid)
+    $sdk->unlinkProduct($sarusPoductUuid);
 
 } catch (\Sarus\Client\Exception\HttpException $e) {
 }
@@ -110,6 +110,18 @@ $sarusPoductUuids = ['uuid1', 'uuid2'];
 try {
 
     $sdk->deactivateEnrollments($email, $sarusPoductUuids);
+
+} catch (\Sarus\Client\Exception\HttpException $e) {
+}
+```
+
+### Run any request through handleRequest method:
+```php
+$request = new \Sarus\Request\Product\Unlink('product_uuid');
+
+try {
+
+    $resposne = $sdk->handleRequest($request);
 
 } catch (\Sarus\Client\Exception\HttpException $e) {
 }
