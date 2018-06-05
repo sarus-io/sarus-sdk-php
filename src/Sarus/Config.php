@@ -52,7 +52,7 @@ class Config
      */
     public static function fromArray(array $data)
     {
-        if (!isset($data['secret'])) {
+        if (!empty($data['secret'])) {
             throw new \InvalidArgumentException('Parameter `secret` is required parameter');
         }
 
