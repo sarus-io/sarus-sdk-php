@@ -41,9 +41,10 @@ $factory = new SdkFactory();
 $sdk = $factory->create($config);
  
 // If you want to log request and response:
- $logger = new Logger();
+ $logger = new Logger(); //class implemented \Psr\Log\LoggerInterface
+ $logFormat = \GuzzleHttp\MessageFormatter::CLF; \\Formating of log message
  $logLevel = \Psr\Log\LogLevel::INFO; //By default log level is info
- $sdk = $factory->createWithLogger($config, $logger, $logLevel);
+ $sdk = $factory->createWithLogger($config, $logger, $logFormat, $logLevel);
 ```
 
 ### Purchase product:

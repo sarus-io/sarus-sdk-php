@@ -22,18 +22,21 @@ class SdkFactory
     }
 
     /**
+     * Creates Sdk using logger and guzzle message formatter
      * @param Config $config
      * @param LoggerInterface $logger
+     * @param string $logFormat
      * @param string $logLevel
      * @return Sdk
      */
     public function createWithLogger(
         Config $config,
         LoggerInterface $logger,
+        $logFormat = MessageFormatter::CLF,
         $logLevel = LogLevel::INFO
     ) {
         $handler = HandlerStack::create();
-        $handler->push(Middleware::log($logger, new MessageFormatter(), $logLevel));
+        $handler->push(Middleware::log($logger, new MessageFormatter($logFormat), $logLevel));
         $guzzleClient = $this->createGuzzleClient($config, $handler);
 
         return $this->createWithGuzzleClient($guzzleClient);
