@@ -44,7 +44,7 @@ class JsonGuzzleClient implements Client
             throw new RuntimeException($e->getMessage(), $e->getCode(), $e);
         }
 
-        $body = $httpResponse->getBody()->getContents();
+        $body = (string) $httpResponse->getBody();
         $parsedBody = [];
 
         if ($body) {
