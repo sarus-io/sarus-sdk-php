@@ -6,6 +6,7 @@ use Sarus\Client\Exception\HttpException;
 use Sarus\Client\Exception\RuntimeException;
 use Sarus\Request\Enrollment\Deactivate;
 use Sarus\Request\Enrollment\GetList;
+use Sarus\Request\Ping;
 use Sarus\Request\Product\Purchase;
 use Sarus\Request\Product\Unlink;
 use Sarus\Request\User;
@@ -75,6 +76,17 @@ class Sdk
     public function deactivateEnrollments($email, array $productUuids)
     {
         return $this->handleRequest(new Deactivate($email, $productUuids));
+    }
+
+    /**
+     * @return Response
+     *
+     * @throws HttpException
+     * @throws RuntimeException
+     */
+    public function ping()
+    {
+        return $this->handleRequest(new Ping());
     }
 
     /**
