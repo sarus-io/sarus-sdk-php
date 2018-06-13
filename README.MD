@@ -46,6 +46,15 @@ $sdk = $factory->create($config);
  $logLevel = \Psr\Log\LogLevel::INFO; //By default log level is info
  $sdk = $factory->createWithLogger($config, $logger, $logFormat, $logLevel);
 ```
+### Ping and check auth key:
+```php
+try {
+
+    $sdk->ping();
+
+} catch (\Sarus\Client\Exception\HttpException $e) {
+}
+```
 
 ### Purchase product:
 ```php
