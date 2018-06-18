@@ -127,7 +127,11 @@ try {
 
 ### Run any request through handleRequest method:
 ```php
-$request = new \Sarus\Request\Product\Unlink('product_uuid');
+$request = \Sarus\Request\CustomRequest::fromArray([
+    'path'   => '/v1/ping',
+    'method' => 'GET',
+    'body'   => null,
+]);
 
 try {
 
@@ -135,6 +139,45 @@ try {
 
 } catch (\Sarus\Client\Exception\HttpException $e) {
 }
+```
+
+### Requests Serialization
+```php
+$request = \Sarus\Request\CustomRequest::fromArray([
+    'path'   => '/v1/ping',
+    'method' => 'GET',
+    'body'   => null,
+]);
+
+$serialized = serialize($request);
+$unserializedRequest = unserialize($serializaed);
+```
+
+### Requests transformation
+- json
+```php
+$request = \Sarus\Request\CustomRequest::fromArray([
+    'path'   => '/v1/ping',
+    'method' => 'GET',
+    'body'   => null,
+]);
+
+$serialized = \json_encode($request);
+
+$data = \json_decode($serialized, true);
+$unserializedRequest = \Sarus\Request\CustomRequest::fromArray($data);
+```
+
+- array
+```php
+$request = \Sarus\Request\CustomRequest::fromArray([
+    'path'   => '/v1/ping',
+    'method' => 'GET',
+    'body'   => null,
+]);
+
+$serialized = $request->toArray();
+$unserializedRequest = \Sarus\Request\CustomRequest::fromArray($data);
 ```
 
 #### Information which could be taken from Sarus\Client\Exception\HttpException:
@@ -154,10 +197,5 @@ try {
 ```
 
 #### Run tests
-- Functional
-    1. Create .env file by copy .env.example in tests/config directory
-    2. Specify values described in .env file
-    3. Run tests `bin/phpunit --testsuite=functional`
-- Unit
-    1.  Run tests `bin/phpunit --testsuite=unit`
+- Run command `bin/phpunit`
 
