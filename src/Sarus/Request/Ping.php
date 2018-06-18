@@ -7,6 +7,8 @@ use Sarus\Request;
 class Ping implements Request
 {
     use Request\SerializableTrait;
+    use Request\ArraySerializableTrait;
+    use JsonSerializableTrait;
 
     /**
      * {@inheritdoc}

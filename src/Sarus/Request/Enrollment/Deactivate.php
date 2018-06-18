@@ -7,6 +7,8 @@ use Sarus\Request;
 class Deactivate implements Request
 {
     use Request\SerializableTrait;
+    use Request\ArraySerializableTrait;
+    use Request\JsonSerializableTrait;
 
     /**
      * @var string

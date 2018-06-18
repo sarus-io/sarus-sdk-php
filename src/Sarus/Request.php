@@ -2,7 +2,7 @@
 
 namespace Sarus;
 
-interface Request extends \Serializable
+interface Request extends \Serializable, \JsonSerializable
 {
     /**
      * @return array|null
@@ -18,4 +18,9 @@ interface Request extends \Serializable
      * @return string
      */
     public function getMethod();
+
+    /**
+     * @return array
+     */
+    public function toArray();
 }

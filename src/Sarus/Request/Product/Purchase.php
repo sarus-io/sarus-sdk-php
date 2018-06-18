@@ -8,6 +8,8 @@ use Sarus\Request\User;
 class Purchase implements Request
 {
     use Request\SerializableTrait;
+    use Request\ArraySerializableTrait;
+    use Request\JsonSerializableTrait;
 
     /**
      * @var array
