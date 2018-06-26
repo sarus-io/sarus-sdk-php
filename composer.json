@@ -1,6 +1,5 @@
 {
-  "name": "sarus/sarus-sdk-php",
-  "homepage": "https://sarus.io",
+  "name": "sarus-io/sarus-sdk-php",
   "description": "Sarus PHP SDK",
   "keywords": ["sarus", "sdk", "php"],
   "type": "library",
